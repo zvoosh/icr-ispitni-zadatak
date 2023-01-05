@@ -1,4 +1,17 @@
-const Client = ({ client }: { client: any }) => {
+import { IClient } from "../../types"
+
+const Client = ({ client }: { client: IClient }) => {
+
+    const startFunc = () => {
+        if(client && client.password) {
+            const stars = [];
+            while(client.password.length > stars.length) {
+                stars.push('*')
+            }
+            return stars;
+        }
+    }
+
     return (<>
         <div className="wrappingDiv">
             <div style={{ margin: '5px' }}>
@@ -13,16 +26,16 @@ const Client = ({ client }: { client: any }) => {
             <div className="normalRow">
                 <span className="colum">Password :</span>
                 <span className="colum">
-                    {client && client.password ? client.password : '-'}
+                    {client && client.password ? startFunc() : '-'}
                 </span>
             </div>
             <div className="coloredRow">
                 <span className="colum">Name :</span>
-                <span className="colum">{client && client.Name ? client.Name : '-'}</span>
+                <span className="colum">{client && client.name ? client.name : '-'}</span>
             </div>
             <div className="normalRow">
                 <span className="colum">Email :</span>
-                <span className="colum">{client && client.Email ? client.Email : '-'}</span>
+                <span className="colum">{client && client.email ? client.email : '-'}</span>
             </div>
             <div className="coloredRow">
                 <span className="colum">Phone number :</span>
