@@ -27,7 +27,7 @@ const Login = () => {
             }
         })
         if (client.length > 0) {
-            successNotification('Successfully loged in!')
+            successNotification('Successfully loged in')
             console.log(client)
             context?.setClient(client[0])
             navigate('/clients')
