@@ -1,8 +1,18 @@
+import queryString from "query-string";
+import { IQueryObj } from "../../types";
 import { flightRepo } from "./flight.repo";
 
 class FlightService {
-    getFlights = () => {
-        return flightRepo.getFlights();
+    getFlights = (filter: IQueryObj | null) => {
+
+        if (filter && Object.keys(filter)[0] === '') {
+            filter = null
+        }
+        if (filter) {
+            const query = queryString.stringify(filter);
+            return flightRepo.getFlights(query);
+        }
+        return flightRepo.getFlights('{}');
     };
     getFlight = (id: string) => {
         return flightRepo.getFlight(id);
@@ -13,10 +23,10 @@ class FlightService {
     editFlight = (id: string, obj: any) => {
         return flightRepo.editFlight(id, obj);
     }
-    reserveFlight = (id: string,obj: {client_id: string}) => {
+    reserveFlight = (id: string, obj: { client_id: string, count: number }) => {
         return flightRepo.reserveFlight(id, obj);
     }
-    unreserveFlight = (id: string, obj: {client_id: string}) => {
+    unreserveFlight = (id: string, obj: { client_id: string }) => {
         return flightRepo.unreserveFlight(id, obj);
     }
     deleteFlight = (id: string) => {

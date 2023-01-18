@@ -3,7 +3,7 @@ import { useQueryClient } from "react-query";
 import { UploadOutlined } from "@ant-design/icons";
 import { UploadRequestOption as RcCustomRequestOptions } from 'rc-upload/lib/interface';
 import { format } from "date-fns";
-import { Button, Col, DatePicker, Form, Input, InputNumber, Row, Select, TimePicker, Upload, UploadProps } from "antd";
+import { Button, Col, DatePicker, Form, Input, InputNumber, Modal, Row, Select, TimePicker, Upload, UploadFile, UploadProps } from "antd";
 import { useFlightMutations } from "../../hooks";
 import { useDate, useNotification } from "../../lib";
 import { CLASS, CLASS_LABEL, DATE_FORMAT, STATUS, STATUS_LABEL, TIME_FORMAT } from "../../types";
@@ -14,30 +14,40 @@ const { TextArea } = Input;
 const FlightForm = ({ success }: { success: () => void }) => {
     const [flightForm] = Form.useForm();
     const client = useQueryClient();
-    const imageRef = useRef<string | null>(null);
+    const imageRef = useRef<any | null>(null);
     const { successNotification, errorNotification } = useNotification();
     const { dateFormat, dateFormatFromIso } = useDate();
     const { createFlightMutation } = useFlightMutations();
 
     const dummyRequest = ({ file, onSuccess }: RcCustomRequestOptions<any>) => {
         setTimeout(() => {
-            if (onSuccess)
+            if (onSuccess) {
                 onSuccess("ok");
+            }
         }, 0);
     };
 
     const handleChange: UploadProps['onChange'] = (info) => {
-        imageRef.current = info.file.name;
+        imageRef.current = info.file.originFileObj;
     }
 
     const onFinish = (values: any) => {
         const { takeoffDate, landingDate, takesoff, lands, ...rest } = values;
+
         values.takeoffDate = dateFormat(takeoffDate);
         values.landingDate = dateFormat(landingDate);
         values.takesoff = format(new Date(takesoff.$d), TIME_FORMAT.HH_mm_ss);
         values.lands = format(new Date(lands.$d), TIME_FORMAT.HH_mm_ss);
         values.productImage = imageRef.current;
-        createFlightMutation.mutate({ obj: values }, {
+
+        let formData = new FormData();
+        for (let key in values) {
+            formData.append(key, values[key]);
+        }
+
+        console.log(formData.get('productImage'))
+
+        createFlightMutation.mutate({ obj: formData }, {
             onSuccess: () => {
                 successNotification('Successfully created a flight');
                 success();
@@ -52,7 +62,7 @@ const FlightForm = ({ success }: { success: () => void }) => {
                 <Col span={8}>
                     <Form.Item
                         labelAlign="left"
-                        label="Title"
+                        label="Airline"
                         name="title"
                     >
                         <Input placeholder="Title..." />
@@ -212,12 +222,14 @@ const FlightForm = ({ success }: { success: () => void }) => {
                 </Col>
             </Row>
             <Row justify={'end'} style={{ marginBottom: '1rem' }}>
-                <Upload multiple={false} onChange={handleChange} customRequest={dummyRequest}>
+                <Upload multiple={false}
+                    onChange={handleChange}
+                    customRequest={dummyRequest} accept={'.jpeg' || '.png'}>
                     <Button icon={<UploadOutlined />} type="primary" htmlType="button">Upload image</Button>
                 </Upload>
             </Row>
             <Row justify='end'>
-                <Button type="primary" htmlType="submit">CREATE</Button>
+                <Button type="primary" htmlType="submit" loading={createFlightMutation.isLoading}>CREATE</Button>
             </Row>
         </Form>
     </>)

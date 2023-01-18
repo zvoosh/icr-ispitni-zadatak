@@ -16,6 +16,13 @@ export interface IFlight {
     total: number
 }
 
+export interface IQueryObj {
+    title?: string,
+    class?: `${CLASS}`,
+    starting?: string,
+    destination?: string
+}
+
 export enum STATUS {
     PREDSTOJECI = 'predstojeci',
     OBAVLJEN = 'obavljen',

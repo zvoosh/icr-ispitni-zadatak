@@ -6,8 +6,8 @@ const ROUTES = {
 }
 
 class FlightRepo {
-    getFlights = (): Promise<IResponse<IFlight>> => {
-        return api.get(`${ROUTES.FLIGHT}flight`);
+    getFlights = (query: string): Promise<IResponse<IFlight>> => {
+        return api.get(`${ROUTES.FLIGHT}flight?${query}`);
     };
     getFlight = (id: string) => {
         return api.get(`${ROUTES.FLIGHT}flight/${id}`);
@@ -18,7 +18,7 @@ class FlightRepo {
     editFlight = (id: string, obj: any) => {
         return api.put(`${ROUTES.FLIGHT}flight/${id}`, obj);
     }
-    reserveFlight = (id: string, obj: { client_id: string }) => {
+    reserveFlight = (id: string, obj: { client_id: string, count: number }) => {
         return api.put(`${ROUTES.FLIGHT}flight/reserve/${id}`, obj);
     }
     unreserveFlight = (id: string, obj: { client_id: string }) => {

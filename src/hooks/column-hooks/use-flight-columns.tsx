@@ -1,48 +1,40 @@
-import { Button } from "antd"
-import { IFlight } from "../../types"
+import { Button, Space, Tag, Tooltip } from "antd"
+import { EyeTwoTone } from "@ant-design/icons"
+import { CLASS, CLASS_LABEL, IFlight, STATUS, STATUS_LABEL } from "../../types"
+import './flight-col.css';
 
-const useFlightColumns = () => {
+interface IUseFlightColumns {
+    unreservation?: (flightId: string) => void,
+    client?: string, isReservationPage?: boolean,
+    isLoading?: boolean,
+    setIsReserveModalVisible?: React.Dispatch<React.SetStateAction<string | null>>
+}
+
+const useFlightColumns = ({ unreservation, client, isReservationPage = false, isLoading, setIsReserveModalVisible }: IUseFlightColumns) => {
     let columns: any = [
         {
             title: '#',
             dataIndex: 'image',
+            key: 'image',
             width: 150,
-            render: (img: string) => (img || '-')
+            render: (img: string) => (<img src={`./images/${img}`} style={{ objectFit: 'contain', width: '100%', height: '100%' }} />)
         },
         {
-            title: 'Title',
+            title: 'Airline',
             dataIndex: 'title',
             key: 'title',
             render: (text: string) => (text || '-'),
         },
         {
-            title: 'Departing from',
+            title: 'Origin',
             dataIndex: 'starting',
             key: 'starting',
             render: (text: string) => (text || '-'),
         },
         {
-            title: 'Arriving in',
+            title: 'Destination',
             dataIndex: 'destination',
             key: 'destination',
-            render: (text: string) => (text || '-'),
-        },
-        {
-            title: 'Description',//////////////////////////
-            dataIndex: 'description',
-            key: 'description',
-            render: (text: string) => (text || '-'),
-        },
-        {
-            title: 'Class',
-            dataIndex: 'class',
-            key: 'class',
-            render: (text: string) => (text || '-'),
-        },
-        {
-            title: 'Price',
-            dataIndex: 'price',
-            key: 'price',
             render: (text: string) => (text || '-'),
         },
         {
@@ -61,48 +53,93 @@ const useFlightColumns = () => {
             title: 'Departing time',
             dataIndex: 'takesoff',
             key: 'takesoff',
-            render: (text: string) => (text || '-'),
+            render: (text: string) => (<Tooltip title="Time applies in Greenwich Mean Time (GMT) timezone">{text}</Tooltip> || '-'),
         },
         {
             title: 'Arriving time',
             dataIndex: 'lands',
             key: 'lands',
-            render: (text: string) => (text || '-'),
+            render: (text: string) => (<Tooltip title="Time applies in Greenwich Mean Time (GMT) timezone">{text}</Tooltip> || '-'),
         },
         {
-            title: 'Rating',
-            dataIndex: 'rating',
-            key: 'rating',
-            render: (text: number) => (text || '-'),
+            title: 'Class',
+            dataIndex: 'class',
+            key: 'class',
+            render: (text: CLASS) => (
+                <Tag color={CLASS_LABEL[text].tagColor}>
+                    {CLASS_LABEL[text].label}
+                </Tag>
+                || '-'),
         },
         {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
-            render: (text: string) => (text || '-'),
-        },
-        {
-            title: 'Filled seats',
-            dataIndex: 'filled',
-            key: 'filled',
-            render: (text: string[]) => (text || '-'),
+            render: (text: STATUS) => (
+                <Tag color={STATUS_LABEL[text].tagColor}>
+                    {STATUS_LABEL[text].label}
+                </Tag> || '-'),
         },
         {
             title: 'Total seats',
             dataIndex: 'total',
             key: 'total',
+            className: isReservationPage && 'd-none',
             render: (text: number) => (text || '-'),
+        },
+        {
+            title: 'Cards',
+            dataIndex: 'filled',
+            key: 'filled',
+            className: !isReservationPage && 'd-none',
+            render: (text: string[]) => {
+                const cardArr = text.map((i: any) => {
+                    return i === client
+                })
+                return (
+                    cardArr.length || '-'
+                )
+            },
+        },
+        {
+            title: 'Price',
+            dataIndex: 'price',
+            key: 'price',
+            render: (text: number, record: IFlight) => {
+                const cardArr = record.filled.map((i: any) => {
+                    return i === client
+                })
+                if (isReservationPage) {
+                    return `${text * cardArr.length} €`
+                }
+                return (
+                    `${text} €` || '-'
+                )
+            },
         },
         {
             title: "Actions",
             datIndex: 'actions',
             key: 'actions',
             render: (_: undefined, record: IFlight) => (
-                <Button type="primary">RESERVE</Button>
+                <Space size={'middle'}>
+                    {setIsReserveModalVisible && (
+                        <Button type="primary" onClick={() => {
+                            setIsReserveModalVisible(record._id)
+                        }} loading={isLoading}>RESERVE</Button>
+                    )}
+                    {unreservation && (
+                        <Button type="primary" onClick={() => {
+                            unreservation(record._id)
+                        }}>CANCEL</Button>
+                    )}
+                    <EyeTwoTone style={{ transform: 'scale(1.5)' }}
+                    />
+                </Space>
             )
         }
     ]
-    return columns
+    return { columns }
 }
 
 export { useFlightColumns }
