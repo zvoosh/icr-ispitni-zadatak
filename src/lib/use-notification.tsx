@@ -3,7 +3,7 @@ import { notification } from 'antd';
 const useNotification = () => {
   const successNotification = (description = 'Uspesno'): void => {
     notification.success({
-      message: 'Success!',
+      message: 'Success',
       description,
     });
   };

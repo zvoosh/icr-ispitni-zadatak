@@ -46,7 +46,7 @@ const Clients = () => {
                                     context?.setClient(null)
                                 }
                             })
-                        }}>DELETE USER</Button>
+                        }} loading={deleteClientMutation.isLoading}>DELETE USER</Button>
                     </Row>
                     <Drawer
                         placement="right"

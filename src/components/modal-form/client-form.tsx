@@ -16,11 +16,11 @@ const ClientForm = ({ onSuccess, activeClient }: { onSuccess: () => void, active
             editClientMutation.mutate({ id: activeClient._id!, obj: values }, {
                 onSuccess: () => {
                     client.invalidateQueries(['client', activeClient._id!])
-                    successNotification('Successfully edited your account!')
+                    successNotification('Successfully edited your account')
                     onSuccess();
                 },
                 onError: () => {
-                    errorNotification('There was an error!')
+                    errorNotification('There was an error')
                 }
             })
             return;
@@ -28,11 +28,11 @@ const ClientForm = ({ onSuccess, activeClient }: { onSuccess: () => void, active
         createClientMutation.mutate({ obj: values }, {
             onSuccess: () => {
                 client.invalidateQueries("clients")
-                successNotification('Successfully created an account!')
+                successNotification('Successfully created an account')
                 onSuccess();
             },
             onError: () => {
-                errorNotification('There was an error!')
+                errorNotification('There was an error')
             }
         })
     }
@@ -120,7 +120,7 @@ const ClientForm = ({ onSuccess, activeClient }: { onSuccess: () => void, active
                 </Col>
             </Row>
             <Row justify="end">
-                <Button type='primary' htmlType='submit'>{activeClient ? 'Edit' : 'Create'}</Button>
+                <Button type='primary' htmlType='submit'>{activeClient ? 'EDIT' : 'CREATE'}</Button>
             </Row>
         </Form>
     </>)
