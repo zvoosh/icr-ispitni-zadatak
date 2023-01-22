@@ -2,11 +2,11 @@ import { useContext, useState } from "react"
 import { useQueryClient } from "react-query"
 import { Button, Col, Input, Modal, Row, Select, Skeleton, Table } from "antd"
 import { Context } from '../../context';
-import { useFlightColumns, useFlightMutations } from "../../hooks"
 import { useFetchFlights } from "../../hooks/fetch-hooks"
 import { useNotification } from "../../lib"
 import { FlightForm, ReserveForm } from "../modal-form"
 import { PlusAndLabel } from "../ui"
+import { useFlightColumns, useFlightMutations } from "../../hooks";
 
 const { Option } = Select;
 
@@ -37,6 +37,7 @@ const Flights = () => {
     }
 
     const { columns } = useFlightColumns({
+        client: context?.client?._id!,
         isLoading: reserveFlightMutation.isLoading,
         setIsReserveModalVisible
     });
@@ -48,9 +49,11 @@ const Flights = () => {
                 <Skeleton />
             ) : (
                 <>
-                    <PlusAndLabel color='#3333ff' label='Create flight' onClick={() => {
-                        setIsModalVisible((prev) => !prev)
-                    }} />
+                    {(context?.client?._id && context?.client?.isAdmin) && (
+                        <PlusAndLabel color='#3333ff' label='Create flight' onClick={() => {
+                            setIsModalVisible((prev) => !prev)
+                        }} />
+                    )}
                     <Row style={{ marginBottom: '.5rem' }}>
                         <Col span={4}>
                             <Select placeholder="Search parameter..."

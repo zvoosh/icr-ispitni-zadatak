@@ -3,9 +3,9 @@ import { IClient } from "../../types"
 const Client = ({ client }: { client: IClient }) => {
 
     const startFunc = () => {
-        if(client && client.password) {
+        if (client && client.password) {
             const stars = [];
-            while(client.password.length > stars.length) {
+            while (client.password.length > stars.length) {
                 stars.push('*')
             }
             return stars;
@@ -41,6 +41,16 @@ const Client = ({ client }: { client: IClient }) => {
                 <span className="colum">Phone number :</span>
                 <span className="colum">{client && client.phone ? client.phone : '-'}</span>
             </div>
+            {client && client.favoritePlace.length > 0 && (
+                <div className="normalRow">
+                    <span className="colum">Favorite regions :</span>
+                    <span className="colum">{client && client.favoritePlace ? client.favoritePlace.map((i: any, index: number) => {
+                        return (
+                            <span> {i} {client.favoritePlace.length > index + 1 ? ' | ' : ''} </span>
+                        )
+                    }) : '-'}</span>
+                </div>
+            )}
         </div>
     </>)
 }

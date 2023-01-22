@@ -29,9 +29,7 @@ function App() {
                 <Route path="/clients" element={<ProtectedRoute />} >
                   <Route path="/clients" element={<Clients />} />
                 </Route>
-                <Route path="/flights" element={<ProtectedRoute />} >
-                  <Route path="/flights" element={<Flights />} />
-                </Route>
+                <Route path="/flights" element={<Flights />} />
                 <Route path="/reservations" element={<ProtectedRoute />} >
                   <Route path="/reservations" element={<Reservations />} />
                 </Route>

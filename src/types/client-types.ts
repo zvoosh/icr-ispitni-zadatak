@@ -5,6 +5,7 @@ export interface IClient {
     name: string;
     email: string;
     phone: string;
+    favoritePlace: string[];
     isAdmin?: boolean
 }
 
