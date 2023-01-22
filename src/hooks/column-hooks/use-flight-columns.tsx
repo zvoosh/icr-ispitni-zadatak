@@ -5,7 +5,8 @@ import './flight-col.css';
 
 interface IUseFlightColumns {
     unreservation?: (flightId: string) => void,
-    client?: string, isReservationPage?: boolean,
+    client?: string,
+    isReservationPage?: boolean,
     isLoading?: boolean,
     setIsReserveModalVisible?: React.Dispatch<React.SetStateAction<string | null>>
 }
@@ -123,7 +124,7 @@ const useFlightColumns = ({ unreservation, client, isReservationPage = false, is
             key: 'actions',
             render: (_: undefined, record: IFlight) => (
                 <Space size={'middle'}>
-                    {setIsReserveModalVisible && (
+                    {setIsReserveModalVisible && client && (
                         <Button type="primary" onClick={() => {
                             setIsReserveModalVisible(record._id)
                         }} loading={isLoading}>RESERVE</Button>

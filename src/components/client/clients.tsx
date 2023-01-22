@@ -1,5 +1,6 @@
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import { Button, Drawer, Row, Skeleton } from 'antd';
+import confirm from 'antd/es/modal/confirm';
 import { useContext, useState } from 'react';
 import { Context } from '../../context';
 import { useFetchClient } from '../../hooks/fetch-hooks';
@@ -41,11 +42,25 @@ const Clients = () => {
                             context?.setClient(null)
                         }}>LOGOUT</Button>
                         <Button type='primary' danger onClick={() => {
-                            deleteClientMutation.mutate({ id: data._id }, {
-                                onSuccess: () => {
-                                    context?.setClient(null)
-                                }
-                            })
+                            confirm({
+                                title: 'Are you sure?',
+                                icon: <ExclamationCircleFilled style={{ color: '#FF8C00' }} />,
+                                content: 'Are you sure you want to delete your account?',
+                                onOk() {
+                                    deleteClientMutation.mutate({ id: data._id }, {
+                                        onSuccess: () => {
+                                            context?.setClient(null)
+                                        }
+                                    })
+                                },
+                                okCancel: true,
+                                cancelText: 'No',
+                                okText: 'Yes',
+                                onCancel() {
+                                    console.log('Cancel')
+                                },
+                            });
+                            
                         }} loading={deleteClientMutation.isLoading}>DELETE USER</Button>
                     </Row>
                     <Drawer

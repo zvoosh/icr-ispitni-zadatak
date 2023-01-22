@@ -1,4 +1,4 @@
-import { Form, Row, Col, Input, Button } from 'antd'
+import { Form, Row, Col, Input, Button, Select, SelectProps } from 'antd'
 import { useQueryClient } from 'react-query';
 import { useClientMutations } from '../../hooks/mutation-hooks';
 import { useNotification } from '../../lib';
@@ -10,6 +10,43 @@ const ClientForm = ({ onSuccess, activeClient }: { onSuccess: () => void, active
     const { successNotification, errorNotification } = useNotification();
 
     const { createClientMutation, editClientMutation } = useClientMutations();
+
+    const options: SelectProps['options'] = [
+        {
+            label: 'Africa',
+            value: 'Africa',
+        },
+        {
+            label: 'Europe',
+            value: 'Europe',
+        },
+        {
+            label: 'Asia',
+            value: 'Asia',
+        },
+        {
+            label: 'North America',
+            value: 'North America',
+        },
+        {
+            label: 'Sout America',
+            value: 'Sout America',
+        },
+        {
+            label: 'Oceania',
+            value: 'Oceania',
+        },
+        {
+            label: 'Antarctica',
+            value: 'Antarctica',
+        },
+    ];
+
+    const handleChange  = (value: string[]) => {
+        clientForm.setFieldsValue({
+            favoritePlace: value
+        })
+    }
 
     const onFinish = (values: any) => {
         if (activeClient) {
@@ -116,6 +153,24 @@ const ClientForm = ({ onSuccess, activeClient }: { onSuccess: () => void, active
                         }]}
                     >
                         <Input autoComplete='off' />
+                    </Form.Item>
+                </Col>
+            </Row>
+            <Row>
+                <Col span={24}>
+                    <Form.Item
+                        labelAlign='left'
+                        label="Favorite regions to go"
+                        name="favoritePlace"
+                        rules={[{
+                            max: 3,
+                            type:"array",
+                            message: 'Maximum of 3 regions are available'
+                        }]}
+                    // RULES
+                    >
+                        <Select mode='multiple' allowClear style={{ width: '100%' }} placeholder="Select favorite places..." onChange={handleChange}
+                            options={options} />
                     </Form.Item>
                 </Col>
             </Row>

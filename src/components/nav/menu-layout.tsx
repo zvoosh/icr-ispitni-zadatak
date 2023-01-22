@@ -53,12 +53,8 @@ const MenuLayout = () => {
                         if (isDisabled()) {
                             event.preventDefault()
                         }
-                    }} to={'/clients'}>Clients</Link>, 'clients', <UserOutlined />, isDisabled()),
-                    getItem(<Link onClick={(event: any) => {
-                        if (isDisabled()) {
-                            event.preventDefault()
-                        }
-                    }} to={'/flights'}>Flights</Link>, 'flights', <CompassOutlined />, isDisabled()),
+                    }} to={'/clients'}>Client</Link>, 'clients', <UserOutlined />, isDisabled()),
+                    getItem(<Link to={'/flights'}>Flights</Link>, 'flights', <CompassOutlined />),
                     getItem(<Link onClick={(event: any) => {
                         if (isDisabled()) {
                             event.preventDefault()
