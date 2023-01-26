@@ -5,3 +5,23 @@
     display: flex;
     font-family: 'Lato', sans-serif;
 }
+
+.routes-holder {
+    padding: 15px;
+    width: 100%;
+}
+
+.anima {
+    animation: slidePage .5s ease-in;
+}
+
+@keyframes slidePage {
+    0% {
+        z-index: -1;
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}

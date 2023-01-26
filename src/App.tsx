@@ -28,7 +28,7 @@ function App() {
               <Sider>
                 <MenuLayout />
               </Sider>
-              <div style={{ padding: "15px", width: '100%' }}>
+              <div className="routes-holder">
                 <Routes>
                   <Route path="/" element={<Login />} />
                   <Route path="/clients" element={<ProtectedRoute />} >

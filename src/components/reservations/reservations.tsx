@@ -57,7 +57,7 @@ const Reservations = () => {
         (
             <Skeleton />
         ) : (
-            <>
+            <div>
                 <Row style={{ marginBottom: '.5rem' }}>
                     <Col span={4}>
                         <Select placeholder="Search parameter..."
@@ -103,7 +103,7 @@ const Reservations = () => {
                     dataSource={reservedFlights()}
                     columns={columns}
                 />
-            </>
+            </div>
         )}</>)
 }
 
