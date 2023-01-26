@@ -46,7 +46,7 @@ const Login = () => {
                 </span>
                 <span className='title'>Login</span>
                 <div className='formStyling'>
-                    <Form form={loginForm} onFinish={onFinish} layout="vertical" autoComplete='off' style={{ width: '100%' }}>
+                    <Form name='loginForm' form={loginForm} onFinish={onFinish} layout="vertical" autoComplete='off' style={{ width: '100%' }}>
                         <Row justify={'center'}>
                             <Col span={12}>
                                 <Form.Item

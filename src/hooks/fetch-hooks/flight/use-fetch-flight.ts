@@ -1,12 +1,13 @@
 import { useQuery } from "react-query";
 import { flightService } from "../../../modules"
-const useFetchFlight = ({ key, id }: { key: string, id: string }, options?: any) => {
+import { IFlight } from "../../../types";
+const useFetchFlight = ([queryKey, id]: [string, string], options?: any) => {
     const fetch = async () => {
         const res = await flightService.getFlight(id);
-        return res.data;
+        return res.data as IFlight;
     }
 
-    return useQuery([key, id], fetch, { ...options });
+    return useQuery([queryKey, id], fetch, { ...options });
 }
 
 export { useFetchFlight }

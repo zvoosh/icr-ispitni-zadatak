@@ -18,6 +18,9 @@ class FlightRepo {
     editFlight = (id: string, obj: any) => {
         return api.put(`${ROUTES.FLIGHT}flight/${id}`, obj);
     }
+    setComment = (id: string, obj: { comments: string, rating: number, wroteComment: string }) => {
+        return api.put(`${ROUTES.FLIGHT}flight/comments/${id}`, obj)
+    }
     reserveFlight = (id: string, obj: { client_id: string, count: number }) => {
         return api.put(`${ROUTES.FLIGHT}flight/reserve/${id}`, obj);
     }

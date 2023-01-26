@@ -1,7 +1,8 @@
 import { Button, Space, Tag, Tooltip } from "antd"
-import { EyeTwoTone } from "@ant-design/icons"
+import { EyeTwoTone, StarFilled } from "@ant-design/icons"
 import { CLASS, CLASS_LABEL, IFlight, STATUS, STATUS_LABEL } from "../../types"
 import './flight-col.css';
+import { useNavigate } from "react-router";
 
 interface IUseFlightColumns {
     unreservation?: (flightId: string) => void,
@@ -12,11 +13,13 @@ interface IUseFlightColumns {
 }
 
 const useFlightColumns = ({ unreservation, client, isReservationPage = false, isLoading, setIsReserveModalVisible }: IUseFlightColumns) => {
+    const navigate = useNavigate()
     let columns: any = [
         {
             title: '#',
             dataIndex: 'image',
             key: 'image',
+            align: 'center',
             width: 150,
             render: (img: string) => (<img src={`./images/${img}`} style={{ objectFit: 'contain', width: '100%', height: '100%' }} />)
         },
@@ -82,28 +85,27 @@ const useFlightColumns = ({ unreservation, client, isReservationPage = false, is
                 </Tag> || '-'),
         },
         {
-            title: 'Total seats',
+            title: 'Available seats',
             dataIndex: 'total',
             key: 'total',
-            className: isReservationPage && 'd-none',
-            render: (text: number) => (text || '-'),
-        },
-        {
-            title: 'Cards',
-            dataIndex: 'filled',
-            key: 'filled',
-            className: !isReservationPage && 'd-none',
-            render: (text: string[]) => {
-                const cardArr = text.map((i: any) => {
-                    return i === client
-                })
-                return (
-                    cardArr.length || '-'
-                )
+            render: (text: number, record: IFlight) => {
+                const ratingHandle = () => {
+                    if (record.rating) {
+                        const sum = record.rating.reduce((acc, curr) => acc + curr, 0)
+                        const result = sum / record.rating.length;
+                        const elements = [];
+                        for (let i = 1; i <= result; i++) {
+                            elements.push(<StarFilled style={{ color: '#1677ff', marginLeft: '.3rem' }} key={i} />)
+                        }
+                        return elements
+                    }
+                    return 'Not rated'
+                }
+                return ratingHandle()
             },
         },
         {
-            title: 'Price',
+            title: isReservationPage ? 'Payment' :'Price',
             dataIndex: 'price',
             key: 'price',
             render: (text: number, record: IFlight) => {
@@ -122,6 +124,7 @@ const useFlightColumns = ({ unreservation, client, isReservationPage = false, is
             title: "Actions",
             datIndex: 'actions',
             key: 'actions',
+            align: 'center',
             render: (_: undefined, record: IFlight) => (
                 <Space size={'middle'}>
                     {setIsReserveModalVisible && client && (
@@ -134,7 +137,12 @@ const useFlightColumns = ({ unreservation, client, isReservationPage = false, is
                             unreservation(record._id)
                         }}>CANCEL</Button>
                     )}
-                    <EyeTwoTone style={{ transform: 'scale(1.5)' }}
+                    <EyeTwoTone style={{ transform: 'scale(1.5)' }} onClick={() => {
+                        unreservation ?
+                            navigate(`/reservations/${record._id}`)
+                            :
+                            navigate(`/flights/${record._id}`)
+                    }}
                     />
                 </Space>
             )

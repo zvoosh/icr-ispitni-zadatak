@@ -6,18 +6,19 @@ import { format } from "date-fns";
 import { Button, Col, DatePicker, Form, Input, InputNumber, Modal, Row, Select, TimePicker, Upload, UploadFile, UploadProps } from "antd";
 import { useFlightMutations } from "../../hooks";
 import { useDate, useNotification } from "../../lib";
-import { CLASS, CLASS_LABEL, DATE_FORMAT, STATUS, STATUS_LABEL, TIME_FORMAT } from "../../types";
+import { CLASS, CLASS_LABEL, DATE_FORMAT, IFlight, STATUS, STATUS_LABEL, TIME_FORMAT } from "../../types";
+
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-const FlightForm = ({ success }: { success: () => void }) => {
+const FlightForm = ({ success, activeItem }: { success: () => void, activeItem?: IFlight }) => {
     const [flightForm] = Form.useForm();
     const client = useQueryClient();
     const imageRef = useRef<any | null>(null);
     const { successNotification, errorNotification } = useNotification();
-    const { dateFormat, dateFormatFromIso } = useDate();
-    const { createFlightMutation } = useFlightMutations();
+    const { dateFormat, parseToMoment } = useDate();
+    const { createFlightMutation, editFlightMutation } = useFlightMutations();
 
     const dummyRequest = ({ file, onSuccess }: RcCustomRequestOptions<any>) => {
         setTimeout(() => {
@@ -36,28 +37,65 @@ const FlightForm = ({ success }: { success: () => void }) => {
 
         values.takeoffDate = dateFormat(takeoffDate);
         values.landingDate = dateFormat(landingDate);
-        values.takesoff = format(new Date(takesoff.$d), TIME_FORMAT.HH_mm_ss);
-        values.lands = format(new Date(lands.$d), TIME_FORMAT.HH_mm_ss);
+        if (!activeItem) {
+            values.takesoff = format(new Date(takesoff.$d), TIME_FORMAT.HH_mm_ss);
+            values.lands = format(new Date(lands.$d), TIME_FORMAT.HH_mm_ss);
+        }
+        if (activeItem) {
+            values.takesoff = format(new Date(takesoff), TIME_FORMAT.HH_mm_ss);
+            values.lands = format(new Date(lands), TIME_FORMAT.HH_mm_ss);
+        }
         values.productImage = imageRef.current;
 
         let formData = new FormData();
         for (let key in values) {
             formData.append(key, values[key]);
         }
-
-        console.log(formData.get('productImage'))
-
-        createFlightMutation.mutate({ obj: formData }, {
-            onSuccess: () => {
-                successNotification('Successfully created a flight');
-                success();
-                client.invalidateQueries('flights')
-            }
-        })
+        if (!activeItem) {
+            createFlightMutation.mutate({ obj: formData }, {
+                onSuccess: () => {
+                    successNotification('Successfully created a flight');
+                    success();
+                    client.invalidateQueries('flights')
+                },
+                onError: () => {
+                    errorNotification('Failed to create a flight')
+                }
+            })
+            return
+        }
+        if (activeItem) {
+            editFlightMutation.mutate({ obj: formData, id: activeItem._id }, {
+                onSuccess: () => {
+                    successNotification('Successfully edited the flight');
+                    success();
+                },
+                onError: () => {
+                    errorNotification('Failed to edit the flight')
+                }
+            })
+            return
+        }
     }
 
+    const init = activeItem ? {
+        takeoffDate: parseToMoment(activeItem.takeoffDate),
+        landingDate: parseToMoment(activeItem.landingDate),
+        takesoff: parseToMoment(activeItem.takesoff, TIME_FORMAT.HH_mm_ss),
+        lands: parseToMoment(activeItem.lands, TIME_FORMAT.HH_mm_ss),
+        title: activeItem.title,
+        starting: activeItem.starting,
+        destination: activeItem.destination,
+        class: activeItem.class,
+        price: activeItem.price,
+        rating: activeItem.rating,
+        total: activeItem.total,
+        status: activeItem.status,
+        description: activeItem.description,
+    } : {}
+
     return (<>
-        <Form form={flightForm} onFinish={onFinish} layout="vertical" autoComplete="off">
+        <Form name='flightForm' initialValues={init} form={flightForm} onFinish={onFinish} layout="vertical" autoComplete="off">
             <Row gutter={12}>
                 <Col span={8}>
                     <Form.Item
@@ -127,7 +165,7 @@ const FlightForm = ({ success }: { success: () => void }) => {
                         label="Rating"
                         name="rating"
                     >
-                        <InputNumber placeholder="Rating..." style={{ width: "100%" }} />
+                        <InputNumber disabled={activeItem ? true : false} placeholder="Rating..." style={{ width: "100%" }} />
                     </Form.Item>
                 </Col>
             </Row>
@@ -221,12 +259,18 @@ const FlightForm = ({ success }: { success: () => void }) => {
                     </Form.Item>
                 </Col>
             </Row>
-            <Row justify={'end'} style={{ marginBottom: '1rem' }}>
-                <Upload multiple={false}
-                    onChange={handleChange}
-                    customRequest={dummyRequest} accept={'.jpeg' || '.png'}>
-                    <Button icon={<UploadOutlined />} type="primary" htmlType="button">Upload image</Button>
-                </Upload>
+            <Row justify={'end'} >
+                <Form.Item name={'productImage'} rules={[{
+                    required: true
+                }]}>
+                    <Upload multiple={false}
+                        onChange={handleChange}
+                        customRequest={dummyRequest} accept={'.jpeg' || '.png'}>
+                        <Button icon={<UploadOutlined />} type="primary" htmlType="button" onClick={(event) => {
+                            // flightForm.submit();
+                        }}>Upload image</Button>
+                    </Upload>
+                </Form.Item>
             </Row>
             <Row justify='end'>
                 <Button type="primary" htmlType="submit" loading={createFlightMutation.isLoading}>CREATE</Button>

@@ -45,8 +45,8 @@ const MenuLayout = () => {
             </span>
             <span className='title'>AskAir</span>
             <Menu
-                mode="vertical"
-                style={{ width: 256, height: '100%' }}
+                mode="inline"
+                style={{ width: 200, height: '100%' }}
                 items={[
                     isDisabled() ? getItem(<Link to={'/'}>Login</Link>, 'login', <UserOutlined />) : null,
                     getItem(<Link onClick={(event: any) => {

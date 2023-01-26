@@ -3,7 +3,6 @@ import { useContext, useState } from "react"
 import { useQueryClient } from "react-query";
 import { useFetchFlights, useFlightColumns, useFlightMutations } from "../../hooks"
 import { Context } from '../../context';
-import { PlusAndLabel } from "../ui";
 import { useNotification } from "../../lib";
 import confirm from "antd/es/modal/confirm";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -22,7 +21,7 @@ const Reservations = () => {
         if (data) {
             return data.filter((item: IFlight)=>{
                 for (let i = 0; i< item.filled.length; i++){
-                   return item.filled[i] === '63b7f362cd34e0fe91498ed5'
+                   return item.filled[i] === context!.client!._id!
                 }
             })
         }

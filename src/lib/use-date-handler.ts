@@ -1,4 +1,5 @@
 import { format, parseISO } from 'date-fns';
+import moment from 'moment';
 import { DATE_FORMAT } from '../types';
 
 const useDate = () => {
@@ -8,6 +9,8 @@ const useDate = () => {
 
     const parseIso = (date: string) => parseISO(date);
 
+    const parseToMoment = (date: string, dateFormat = DATE_FORMAT.ddMMyyyy) => moment(date, dateFormat);
+
     const dateFormatFromIso = (date: string, dateFormat = DATE_FORMAT.ddMMyyyy) => {
         const parsedDate = parseIso(date);
         return format(new Date(parsedDate), dateFormat);
@@ -16,6 +19,7 @@ const useDate = () => {
     return {
         dateFormat,
         parseIso,
+        parseToMoment,
         dateFormatFromIso,
     };
 };

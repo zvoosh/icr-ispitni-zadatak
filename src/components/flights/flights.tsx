@@ -1,6 +1,6 @@
 import { useContext, useState } from "react"
 import { useQueryClient } from "react-query"
-import { Button, Col, Input, Modal, Row, Select, Skeleton, Table } from "antd"
+import { Button, Col, Form, Input, Modal, Row, Select, Skeleton, Table } from "antd"
 import { Context } from '../../context';
 import { useFetchFlights } from "../../hooks/fetch-hooks"
 import { useNotification } from "../../lib"
@@ -14,6 +14,7 @@ const Flights = () => {
     const client = useQueryClient();
     const context = useContext(Context);
     const [searchParams, setSearchParams] = useState<string>('');
+    const [statusParams, setStatusParams] = useState<string>('');
     const [searchParamValue, setSearchParamValue] = useState<string>();
     const [search, setSearch] = useState<{} | null>(null);
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -56,12 +57,38 @@ const Flights = () => {
                     )}
                     <Row style={{ marginBottom: '.5rem' }}>
                         <Col span={4}>
+                            <Select placeholder="Search status..."
+                                style={{ width: '100%' }}
+                                value={statusParams ? statusParams : null}
+                                onChange={(value: string) => {
+                                    setStatusParams(value)
+                                }}
+                                allowClear={true}
+                            >
+                                <Option value={"predstojeci"}>
+                                    Upcoming
+                                </Option>
+                                <Option value={"otkazan"}>
+                                    Cancelled
+                                </Option>
+                                <Option value={"obavljen"}>
+                                    Done
+                                </Option>
+                            </Select>
+                        </Col>
+                    </Row>
+                    <Row style={{ marginBottom: '.5rem' }}>
+                        <Col span={4}>
                             <Select placeholder="Search parameter..."
                                 style={{ width: '100%' }}
+                                value={searchParams}
                                 onChange={(value: string) => {
                                     setSearchParams(value)
                                 }}
                             >
+                                <Option value={""}>
+                                    No filter
+                                </Option>
                                 <Option value={"title"}>
                                     Airline
                                 </Option>
@@ -79,7 +106,7 @@ const Flights = () => {
                     </Row>
                     <Row style={{ marginBottom: '.5rem' }}>
                         <Col span={12}>
-                            <Input placeholder={`Search for ${searchParams === 'title' ? 'airline' : searchParams}...`} onChange={(i: any) => {
+                            <Input value={searchParamValue} placeholder={`Search for ${searchParams === 'title' ? 'airline' : searchParams}...`} onChange={(i: any) => {
                                 setSearchParamValue(i.target.value)
                             }} />
                         </Col>
@@ -88,7 +115,8 @@ const Flights = () => {
                         <Col>
                             <Button type="primary" onClick={() => {
                                 setSearch({
-                                    [searchParams]: searchParamValue
+                                    [searchParams]: searchParamValue,
+                                    status: statusParams
                                 })
                                 console.log(search)
                                 client.invalidateQueries(['flights', search])
@@ -109,6 +137,7 @@ const Flights = () => {
                     <Table
                         dataSource={data}
                         columns={columns}
+                        rowKey={'_id'}
                     />
                     <Modal
                         open={isModalVisible}

@@ -8,7 +8,7 @@ const ReserveForm = ({ finishFn }: { finishFn: (values:any, id?: string) => void
     }
 
     return (<>
-        <Form form={reserveForm} onFinish={onFinish} layout="vertical" autoComplete="off" style={{ width: '100%', height: '100%' }}>
+        <Form name="reserveForm" form={reserveForm} onFinish={onFinish} layout="vertical" autoComplete="off" style={{ width: '100%', height: '100%' }}>
             <Row>
                 <Col span={24}>
                     <Form.Item

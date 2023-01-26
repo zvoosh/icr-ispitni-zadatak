@@ -5,7 +5,7 @@ import { flightRepo } from "./flight.repo";
 class FlightService {
     getFlights = (filter: IQueryObj | null) => {
 
-        if (filter && Object.keys(filter)[0] === '') {
+        if (filter && Object.keys(filter)[0] === '' && Object.keys(filter)[1] === '') {
             filter = null
         }
         if (filter) {
@@ -22,6 +22,9 @@ class FlightService {
     }
     editFlight = (id: string, obj: any) => {
         return flightRepo.editFlight(id, obj);
+    }
+    setComment = (id: string, obj: { comments: string, rating: number, wroteComment: string }) => {
+        return flightRepo.setComment(id, obj)
     }
     reserveFlight = (id: string, obj: { client_id: string, count: number }) => {
         return flightRepo.reserveFlight(id, obj);
