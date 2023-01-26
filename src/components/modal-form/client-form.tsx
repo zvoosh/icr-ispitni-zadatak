@@ -1,11 +1,14 @@
-import { Form, Row, Col, Input, Button, Select, SelectProps } from 'antd'
+import { useContext } from 'react';
 import { useQueryClient } from 'react-query';
+import { Form, Row, Col, Input, Button, Select, SelectProps } from 'antd'
+import { Context } from '../../context';
 import { useClientMutations } from '../../hooks/mutation-hooks';
 import { useNotification } from '../../lib';
 import { IClient } from '../../types';
 
 const ClientForm = ({ onSuccess, activeClient }: { onSuccess: () => void, activeClient?: IClient }) => {
     const [clientForm] = Form.useForm();
+    const ctx = useContext(Context);
     const client = useQueryClient();
     const { successNotification, errorNotification } = useNotification();
 
@@ -42,7 +45,7 @@ const ClientForm = ({ onSuccess, activeClient }: { onSuccess: () => void, active
         },
     ];
 
-    const handleChange  = (value: string[]) => {
+    const handleChange = (value: string[]) => {
         clientForm.setFieldsValue({
             favoritePlace: value
         })
@@ -50,14 +53,19 @@ const ClientForm = ({ onSuccess, activeClient }: { onSuccess: () => void, active
 
     const onFinish = (values: any) => {
         if (activeClient) {
-            editClientMutation.mutate({ id: activeClient._id!, obj: values }, {
+            editClientMutation.mutate({
+                id: activeClient._id!, obj: {
+                    ...values,
+                    isAdmin: ctx?.client?.isAdmin
+                }
+            }, {
                 onSuccess: () => {
                     client.invalidateQueries(['client', activeClient._id!])
                     successNotification('Successfully edited your account')
                     onSuccess();
                 },
                 onError: () => {
-                    errorNotification('There was an error')
+                    errorNotification('Try again or contact support')
                 }
             })
             return;
@@ -69,13 +77,13 @@ const ClientForm = ({ onSuccess, activeClient }: { onSuccess: () => void, active
                 onSuccess();
             },
             onError: () => {
-                errorNotification('There was an error')
+                errorNotification('Try again or contact support')
             }
         })
     }
 
     return (<>
-        <Form form={clientForm} onFinish={onFinish} layout="vertical" autoComplete='off' initialValues={activeClient ? activeClient : {}}>
+        <Form name='clientForm' form={clientForm} onFinish={onFinish} layout="vertical" autoComplete='off' initialValues={activeClient ? activeClient : {}}>
             <Row>
                 <Col span={24}>
                     <Form.Item
@@ -164,7 +172,7 @@ const ClientForm = ({ onSuccess, activeClient }: { onSuccess: () => void, active
                         name="favoritePlace"
                         rules={[{
                             max: 3,
-                            type:"array",
+                            type: "array",
                             message: 'Maximum of 3 regions are available'
                         }]}
                     // RULES

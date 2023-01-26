@@ -2,6 +2,7 @@ import { CloseOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import { Button, Drawer, Row, Skeleton } from 'antd';
 import confirm from 'antd/es/modal/confirm';
 import { useContext, useState } from 'react';
+import { render } from 'react-dom';
 import { Context } from '../../context';
 import { useFetchClient } from '../../hooks/fetch-hooks';
 import { useClientMutations } from '../../hooks/mutation-hooks';

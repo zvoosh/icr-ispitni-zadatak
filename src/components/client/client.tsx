@@ -12,6 +12,17 @@ const Client = ({ client }: { client: IClient }) => {
         }
     }
 
+    const favoriteRegionsHook = () => {
+        if (client && client.favoritePlace) {
+            return client.favoritePlace.map((i: any, index: number) => {
+                return (
+                    <span key={index}> {i} {client.favoritePlace.length > index + 1 ? ' | ' : ''} </span>
+                )
+            })
+        }
+        return '-';
+    }
+
     return (<>
         <div className="wrappingDiv">
             <div style={{ margin: '5px' }}>
@@ -44,11 +55,7 @@ const Client = ({ client }: { client: IClient }) => {
             {client && client.favoritePlace.length > 0 && (
                 <div className="normalRow">
                     <span className="colum">Favorite regions :</span>
-                    <span className="colum">{client && client.favoritePlace ? client.favoritePlace.map((i: any, index: number) => {
-                        return (
-                            <span> {i} {client.favoritePlace.length > index + 1 ? ' | ' : ''} </span>
-                        )
-                    }) : '-'}</span>
+                    <span className="colum">{favoriteRegionsHook()}</span>
                 </div>
             )}
         </div>

@@ -5,6 +5,9 @@ export interface IFlight {
     title: string;
     starting: string;
     destination: string;
+    description: string;
+    takeoffDate: string;
+    landingDate: string;
     image: string;
     class: string;
     price: number;
@@ -13,7 +16,9 @@ export interface IFlight {
     rating: number[],
     status: string,
     filled: string[],
-    total: number
+    total: number,
+    comments: string[],
+    wroteComment: string[],
 }
 
 export interface IQueryObj {
