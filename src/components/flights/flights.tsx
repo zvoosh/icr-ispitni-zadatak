@@ -49,7 +49,7 @@ const Flights = () => {
             (
                 <Skeleton />
             ) : (
-                <>
+                <div >
                     {(context?.client?._id && context?.client?.isAdmin) && (
                         <PlusAndLabel color='#3333ff' label='Create flight' onClick={() => {
                             setIsModalVisible((prev) => !prev)
@@ -152,7 +152,7 @@ const Flights = () => {
                             setIsModalVisible(false)
                         }} />
                     </Modal>
-                </>
+                </div>
             )}
     </>)
 }

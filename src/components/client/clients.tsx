@@ -29,16 +29,22 @@ const Clients = () => {
     const { deleteClientMutation } = useClientMutations();
 
     return (<>
-        <div style={{ display: 'flex', flexDirection: 'column' }} className="clientWrap">
+        <div style={{ display: 'flex', flexDirection: 'column' }} className="clientWrap anima">
             {isLoading ? (
                 <Skeleton paragraph={true} />
             ) : (
                 <>
+                    {/* onClick={() => {
+                        setIsModalVisible((prev) => !prev)
+                    }}
                     <PlusAndLabel color='#3333ff' label='Edit account' onClick={() => {
                         setIsModalVisible((prev) => !prev)
-                    }} />
+                    }} /> */}
                     <Client client={data} />
                     <Row justify={"end"} style={{ marginTop: '1rem' }}>
+                        <Button type='primary' style={{ marginRight: '1rem' }} onClick={() => {
+                            setIsModalVisible((prev) => !prev)
+                        }}>EDIT</Button>
                         <Button type='primary' style={{ marginRight: '1rem' }} onClick={() => {
                             context?.setClient(null)
                         }}>LOGOUT</Button>
@@ -61,7 +67,7 @@ const Clients = () => {
                                     console.log('Cancel')
                                 },
                             });
-                            
+
                         }} loading={deleteClientMutation.isLoading}>DELETE USER</Button>
                     </Row>
                     <Drawer
