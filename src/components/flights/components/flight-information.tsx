@@ -1,10 +1,9 @@
-import { useState ,useContext} from "react"
+import { useState } from "react"
 import { useQueryClient } from "react-query";
 import { Modal } from "antd";
 import { ArrowRightOutlined, EditTwoTone } from "@ant-design/icons"
 import { IFlight, STATUS } from "../../../types";
 import { FlightForm } from "../../modal-form";
-import { Context } from "../../../context";
 import { useParams } from "react-router";
 
 interface IFlightInfoProps {
@@ -23,7 +22,7 @@ const FlightInformation = ({ starting, destination, takeoffDate, takeoffTime, la
     const { id } = useParams<{ id: string }>();
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     return (
-        <div className="mb-3">
+        <div className="mb-3 box-shadow">
             <div className='flight-section-title'>
                 <span>FLIGHT INFORMATION</span>
                 {isAdmin && activeItem?.status !== STATUS.OBAVLJEN && (

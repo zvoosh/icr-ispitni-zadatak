@@ -33,8 +33,61 @@
 </style>
 
 <body>
+  <style>
+    .rw-conversation-container .rw-header {
+      background-color: #99ccff;
+    }
+
+    .rw-conversation-container .rw-messages-container {
+      background-image: url('./images/chatbg.jpeg');
+    }
+
+    .rw-conversation-container .rw-messages-container .rw-message .rw-client {
+      background-color: #99ccff;
+      color: black;
+    }
+
+    .rw-conversation-container .rw-reply {
+      background-color: #1890ff;
+      border: 1px solid #1890ff;
+    }
+
+    .rw-carousel-card {
+      background-color: white;
+    }
+
+    .rw-launcher {
+      background-color: #99ccff;
+    }
+  </style>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
+  <script>!(function () {
+      let e = document.createElement("script"),
+        t = document.head || document.getElementsByTagName("head")[0];
+      (e.src =
+        "https://cdn.jsdelivr.net/npm/rasa-webchat/lib/index.js"),
+        // Replace 1.x.x with the version that you want
+        (e.async = !0),
+        (e.onload = () => {
+          window.WebChat.default(
+            {
+              title: 'AskAir chat',
+              initPayload: '/greet',
+              customData: { language: "en" },
+              socketUrl: "http://localhost:5005",
+              // add other props here
+              profileAvatar: '../images/bot.png',
+              showMessageDate: true,
+              inputTextFieldHint: 'What is on your mind...?'
+            },
+            null
+          );
+        }),
+        t.insertBefore(e, t.firstChild);
+    })();
+    localStorage.clear();
+  </script>
   <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

@@ -1,7 +1,7 @@
 import { useContext, useState, useRef } from 'react';
 import { matchRoutes, useLocation, useParams } from 'react-router';
 import { useQueryClient } from 'react-query';
-import { Breadcrumb, Button, Card, Col, Drawer, Form, Input, Row, Select, Skeleton } from 'antd';
+import { Breadcrumb, Button, Card, Col, Drawer, Form, Input, Modal, Row, Select, Skeleton } from 'antd';
 import { CloseOutlined, StarFilled } from '@ant-design/icons';
 import './flight.css';
 import { Context } from '../../context';
@@ -11,6 +11,7 @@ import { FlightDetails, FlightInformation, HeadSection } from './components';
 import { useFlightMutations } from '../../hooks';
 import { useNotification } from '../../lib';
 import { Link } from 'react-router-dom';
+import { ReserveForm } from '../modal-form';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -21,6 +22,7 @@ const Flight = () => {
     const client = useQueryClient();
     const [commentForm] = Form.useForm();
     const [isModalVisible, setIsModalVisible] = useState<boolean>();
+    const [isReserveModalVisible, setIsReserveModalVisible] = useState<boolean>(false);
     const ref = useRef<string | null>(null);
     const { successNotification, errorNotification } = useNotification();
 
@@ -34,7 +36,7 @@ const Flight = () => {
 
     useCurrentPath();
 
-    const { setCommentMutation } = useFlightMutations();
+    const { setCommentMutation, reserveFlightMutation } = useFlightMutations();
 
     const { data, isLoading } = useFetchFlight(['one-flights', id!])
 
@@ -51,6 +53,20 @@ const Flight = () => {
         })
         return;
     }
+
+    const reserveFn = (count: any) => {
+        reserveFlightMutation.mutate({ id: id!, obj: { client_id: context?.client?._id!, count } }, {
+            onSuccess: () => {
+                successNotification('Reservation successfull.');
+                client.invalidateQueries(['one-flights', id!]);
+                setIsReserveModalVisible(false)
+            },
+            onError: () => {
+                errorNotification('Reservation failed.')
+            }
+        });
+    }
+
     return (
         <>
             {isLoading && !data ? (
@@ -68,7 +84,7 @@ const Flight = () => {
                         </Breadcrumb.Item>
                         <Breadcrumb.Item>Flight information</Breadcrumb.Item>
                     </Breadcrumb>
-                    <HeadSection status={(data?.status || 'predstojeci') as STATUS} title={data?.title || '-'} />
+                    <HeadSection status={(data?.status || 'predstojeci') as STATUS} title={data?.title || '-'} image={data?.image || null} />
                     <FlightInformation
                         starting={data?.starting || '-'}
                         destination={data?.destination || '-'}
@@ -99,12 +115,23 @@ const Flight = () => {
                             </div>
                         </div>
                     </FlightDetails>
-                    <div className='mb-2'>
+                    <div className='mb-1 box-shadow'>
                         <div className='descriptionWrap'>
                             <span className='description-section-title'>DESCRIPTION</span>
                             <span className='mb-2' style={{ width: '55%', textAlign: 'justify', textAlignLast: 'center' }}>{data?.description}</span>
                         </div>
                     </div>
+                    {data && data.status === STATUS.PREDSTOJECI && context && context.client && !data.filled.includes(context.client._id!) && (
+                        <Row justify={'center'}>
+                            <Button type='primary' className="book-btn" onClick={() => {
+                                if (context && !context.client) {
+                                    errorNotification('You must login to reserve a flight')
+                                    return;
+                                }
+                                setIsReserveModalVisible((prev) => !prev)
+                            }}>RESERVE</Button>
+                        </Row>
+                    )}
                     <div>
                         <div className='flightCommentsTitle'>
                             {data && data.comments && data.comments.length > 0 && !context?.client?._id && (
@@ -115,11 +142,19 @@ const Flight = () => {
                             {data && data.comments && data.comments.length > 0 && context?.client?._id && (
                                 <>
                                     <span className='flight-section-title'>COMMENTS</span>
-                                    {data?.status === STATUS.OBAVLJEN && data.filled.includes(context.client._id) &&  (
+                                    {data?.status === STATUS.OBAVLJEN && data.filled.includes(context.client._id) && (
                                         <Button type='primary' style={{ width: '20%', marginTop: '1rem' }} onClick={() => {
                                             setIsModalVisible((prev) => !prev)
                                         }}>WRITE COMMENT</Button>
                                     )}
+                                </>
+                            )}
+                            {data && data.comments && data.comments.length < 1 && context?.client?._id && data?.status === STATUS.OBAVLJEN && data.filled.includes(context.client._id) && (
+                                <>
+                                    <span className='flight-section-title'>COMMENTS</span>
+                                    <Button type='primary' style={{ width: '20%', marginTop: '1rem' }} onClick={() => {
+                                        setIsModalVisible((prev) => !prev)
+                                    }}>WRITE COMMENT</Button>
                                 </>
                             )}
                         </div>
@@ -224,7 +259,17 @@ const Flight = () => {
                             </Form>
                         </Drawer>
                     </div>
-
+                    <Modal
+                        open={isReserveModalVisible}
+                        title="Reserve flight"
+                        footer={null}
+                        onCancel={() => {
+                            setIsReserveModalVisible(false)
+                        }}
+                        destroyOnClose={true}
+                        width={500}>
+                        <ReserveForm finishFn={reserveFn} />
+                    </Modal>
                 </div>
             )}
         </>

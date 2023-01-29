@@ -102,6 +102,10 @@ const FlightForm = ({ success, activeItem }: { success: () => void, activeItem?:
                         labelAlign="left"
                         label="Airline"
                         name="title"
+                        rules={[{
+                            required:true,
+                            message: 'Field must not be empty'
+                        }]}
                     >
                         <Input placeholder="Title..." />
                     </Form.Item>
@@ -111,6 +115,10 @@ const FlightForm = ({ success, activeItem }: { success: () => void, activeItem?:
                         labelAlign="left"
                         label="Departing from"
                         name="starting"
+                        rules={[{
+                            required:true,
+                            message: 'Field must not be empty'
+                        }]}
                     >
                         <Input placeholder="Departing from..." />
                     </Form.Item>
@@ -120,6 +128,10 @@ const FlightForm = ({ success, activeItem }: { success: () => void, activeItem?:
                         labelAlign="left"
                         label="Arriving in"
                         name="destination"
+                        rules={[{
+                            required:true,
+                            message: 'Field must not be empty'
+                        }]}
                     >
                         <Input placeholder="Lands in..." />
                     </Form.Item>
@@ -131,6 +143,10 @@ const FlightForm = ({ success, activeItem }: { success: () => void, activeItem?:
                         labelAlign="left"
                         label="Class"
                         name="class"
+                        rules={[{
+                            required:true,
+                            message: 'Field must not be empty'
+                        }]}
                     >
                         <Select placeholder="Class..."
                             style={{ width: '100%' }}
@@ -155,6 +171,10 @@ const FlightForm = ({ success, activeItem }: { success: () => void, activeItem?:
                         labelAlign="left"
                         label="Price"
                         name="price"
+                        rules={[{
+                            required:true,
+                            message: 'Field must not be empty'
+                        }]}
                     >
                         <Input placeholder="Price..." style={{ width: "100%" }} suffix={"€"} />
                     </Form.Item>
@@ -164,6 +184,10 @@ const FlightForm = ({ success, activeItem }: { success: () => void, activeItem?:
                         labelAlign="left"
                         label="Rating"
                         name="rating"
+                        rules={[{
+                            required:true,
+                            message: 'Field must not be empty'
+                        }]}
                     >
                         <InputNumber disabled={activeItem ? true : false} placeholder="Rating..." style={{ width: "100%" }} />
                     </Form.Item>
@@ -175,6 +199,10 @@ const FlightForm = ({ success, activeItem }: { success: () => void, activeItem?:
                         labelAlign="left"
                         label="Departing date"
                         name="takeoffDate"
+                        rules={[{
+                            required:true,
+                            message: 'Field must not be empty'
+                        }]}
                     >
                         <DatePicker style={{ width: "100%" }} />
                     </Form.Item>
@@ -184,6 +212,10 @@ const FlightForm = ({ success, activeItem }: { success: () => void, activeItem?:
                         labelAlign="left"
                         label="Arriving date"
                         name="landingDate"
+                        rules={[{
+                            required:true,
+                            message: 'Field must not be empty'
+                        }]}
                     >
                         <DatePicker style={{ width: "100%" }} />
                     </Form.Item>
@@ -193,6 +225,10 @@ const FlightForm = ({ success, activeItem }: { success: () => void, activeItem?:
                         labelAlign="left"
                         label="Total seats"
                         name="total"
+                        rules={[{
+                            required:true,
+                            message: 'Field must not be empty'
+                        }]}
                     >
                         <Input placeholder="Total seats..." />
                     </Form.Item>
@@ -204,6 +240,10 @@ const FlightForm = ({ success, activeItem }: { success: () => void, activeItem?:
                         labelAlign="left"
                         label="Departing time"
                         name="takesoff"
+                        rules={[{
+                            required:true,
+                            message: 'Field must not be empty'
+                        }]}
                     >
                         <TimePicker style={{ width: "100%" }} format={TIME_FORMAT.HH_mm} />
                     </Form.Item>
@@ -213,6 +253,10 @@ const FlightForm = ({ success, activeItem }: { success: () => void, activeItem?:
                         labelAlign="left"
                         label="Arriving time"
                         name="lands"
+                        rules={[{
+                            required:true,
+                            message: 'Field must not be empty'
+                        }]}
                     >
                         <TimePicker style={{ width: "100%" }} format={TIME_FORMAT.HH_mm} />
                     </Form.Item>
@@ -222,6 +266,10 @@ const FlightForm = ({ success, activeItem }: { success: () => void, activeItem?:
                         labelAlign="left"
                         label="Status"
                         name="status"
+                        rules={[{
+                            required:true,
+                            message: 'Field must not be empty'
+                        }]}
                     >
                         <Select placeholder="Status..."
                             style={{ width: '100%' }}
@@ -248,9 +296,13 @@ const FlightForm = ({ success, activeItem }: { success: () => void, activeItem?:
                         labelAlign="left"
                         label="Description"
                         name={"description"}
+                        rules={[{
+                            required:true,
+                            message: 'Field must not be empty'
+                        }]}
                     >
                         <TextArea
-                            maxLength={255}
+                            maxLength={510}
                             autoSize={{
                                 minRows: 8,
                                 maxRows: 2,
@@ -261,7 +313,8 @@ const FlightForm = ({ success, activeItem }: { success: () => void, activeItem?:
             </Row>
             <Row justify={'end'} >
                 <Form.Item name={'productImage'} rules={[{
-                    required: true
+                    required: true,
+                    message:'Must not be empty'
                 }]}>
                     <Upload multiple={false}
                         onChange={handleChange}
@@ -273,7 +326,10 @@ const FlightForm = ({ success, activeItem }: { success: () => void, activeItem?:
                 </Form.Item>
             </Row>
             <Row justify='end'>
-                <Button type="primary" htmlType="submit" loading={createFlightMutation.isLoading}>CREATE</Button>
+                <Button type="primary" loading={createFlightMutation.isLoading} onClick={(event)=>{
+                    event.preventDefault();
+                    flightForm.submit();
+                }}>{activeItem ? 'EDIT' : 'CREATE'}</Button>
             </Row>
         </Form>
     </>)

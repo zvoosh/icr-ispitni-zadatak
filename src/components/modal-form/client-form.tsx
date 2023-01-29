@@ -183,7 +183,7 @@ const ClientForm = ({ onSuccess, activeClient }: { onSuccess: () => void, active
                 </Col>
             </Row>
             <Row justify="end">
-                <Button type='primary' htmlType='submit'>{activeClient ? 'EDIT' : 'CREATE'}</Button>
+                <Button type='primary' htmlType='submit'>{activeClient ? 'EDIT' : 'REGISTER'}</Button>
             </Row>
         </Form>
     </>)

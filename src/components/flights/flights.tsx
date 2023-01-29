@@ -81,14 +81,12 @@ const Flights = () => {
                         <Col span={4}>
                             <Select placeholder="Search parameter..."
                                 style={{ width: '100%' }}
-                                value={searchParams}
+                                value={searchParams ? searchParams : null}
                                 onChange={(value: string) => {
                                     setSearchParams(value)
                                 }}
+                                allowClear={true}
                             >
-                                <Option value={""}>
-                                    No filter
-                                </Option>
                                 <Option value={"title"}>
                                     Airline
                                 </Option>
@@ -138,6 +136,11 @@ const Flights = () => {
                         dataSource={data}
                         columns={columns}
                         rowKey={'_id'}
+                        pagination={{
+                            position: ["bottomLeft"],
+                            pageSize: 5,
+                            
+                        }}
                     />
                     <Modal
                         open={isModalVisible}

@@ -16,19 +16,23 @@ const useFlightColumns = ({ unreservation, client, isReservationPage = false, is
     const navigate = useNavigate()
     let columns: any = [
         {
-            title: '#',
+            title: '',
             dataIndex: 'image',
             key: 'image',
             align: 'center',
             width: 150,
-            render: (img: string) => (<img src={`./images/${img}`} style={{ objectFit: 'contain', width: '100%', height: '100%' }} />)
+            render: (img: string, record: IFlight) => (<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div className="image-height">
+                    <img src={`./images/${img}`} style={{ objectFit: 'contain', width: '100%', height: '100%' }} />
+                </div>
+            </div>)
         },
-        {
-            title: 'Airline',
-            dataIndex: 'title',
-            key: 'title',
-            render: (text: string) => (text || '-'),
-        },
+        // {
+        //     title: 'Airline',
+        //     dataIndex: 'title',
+        //     key: 'title',
+        //     render: (text: string) => (text || '-'),
+        // },
         {
             title: 'Origin',
             dataIndex: 'starting',
@@ -85,9 +89,10 @@ const useFlightColumns = ({ unreservation, client, isReservationPage = false, is
                 </Tag> || '-'),
         },
         {
-            title: 'Available seats',
+            title: 'Rating',
             dataIndex: 'total',
             key: 'total',
+            width: 140,
             render: (text: number, record: IFlight) => {
                 const ratingHandle = () => {
                     if (record.rating) {
@@ -105,9 +110,10 @@ const useFlightColumns = ({ unreservation, client, isReservationPage = false, is
             },
         },
         {
-            title: isReservationPage ? 'Payment' :'Price',
+            title: isReservationPage ? 'Payment' : 'Price',
             dataIndex: 'price',
             key: 'price',
+            width: 100,
             render: (text: number, record: IFlight) => {
                 const cardArr = record.filled.map((i: any) => {
                     return i === client
@@ -127,8 +133,8 @@ const useFlightColumns = ({ unreservation, client, isReservationPage = false, is
             align: 'center',
             render: (_: undefined, record: IFlight) => (
                 <Space size={'middle'}>
-                    {setIsReserveModalVisible && client && (
-                        <Button type="primary" onClick={() => {
+                    {setIsReserveModalVisible && client && record.status == STATUS.PREDSTOJECI && (
+                        <Button type="primary" className="btn-size" onClick={() => {
                             setIsReserveModalVisible(record._id)
                         }} loading={isLoading}>RESERVE</Button>
                     )}
