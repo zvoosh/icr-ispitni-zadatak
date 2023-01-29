@@ -24,7 +24,7 @@ const FlightDetails = ({ flightClass, pricePerSeat, rating, children }: IFlightD
 
     const res = ratingHandle();
     return (
-        <div className="mb-3">
+        <div className="mb-3 box-shadow">
             <div className='flight-section-title'>
                 <span>FLIGHT DETAILS</span>
             </div>

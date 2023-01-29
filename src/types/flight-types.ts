@@ -68,14 +68,14 @@ export const CLASS_LABEL: {
 } = {
     [CLASS.ECONOMY]: {
         label: "Economy",
-        tagColor: TAG_COLORS.BLUE,
+        tagColor: TAG_COLORS.TEAL,
     },
     [CLASS.BUSINESS]: {
         label: 'Business',
-        tagColor: TAG_COLORS.LIME
+        tagColor: TAG_COLORS.VIOLET
     },
     [CLASS.FIRST_CLASS]: {
         label: 'First class',
-        tagColor: TAG_COLORS.RED
+        tagColor: TAG_COLORS.NAVY
     }
 }

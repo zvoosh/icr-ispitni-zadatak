@@ -1,4 +1,4 @@
-import { Button, Col, Input, Modal, Row, Select, Skeleton, Table } from "antd";
+import { Button, Col, Input, Row, Select, Skeleton, Table } from "antd";
 import { useContext, useState } from "react"
 import { useQueryClient } from "react-query";
 import { useFetchFlights, useFlightColumns, useFlightMutations } from "../../hooks"
@@ -7,21 +7,23 @@ import { useNotification } from "../../lib";
 import confirm from "antd/es/modal/confirm";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { IFlight } from "../../types";
+import './reservations.css'
 const { Option } = Select;
 
 const Reservations = () => {
     const client = useQueryClient();
     const context = useContext(Context);
     const [searchParams, setSearchParams] = useState<string>('');
+    const [statusParams, setStatusParams] = useState<string>('');
     const [searchParamValue, setSearchParamValue] = useState<string>();
     const [search, setSearch] = useState<{} | null>(null);
     const { successNotification, errorNotification } = useNotification();
     const { data, isLoading } = useFetchFlights(['flights', search])
     const reservedFlights = () => {
         if (data) {
-            return data.filter((item: IFlight)=>{
-                for (let i = 0; i< item.filled.length; i++){
-                   return item.filled[i] === context!.client!._id!
+            return data.filter((item: IFlight) => {
+                for (let i = 0; i < item.filled.length; i++) {
+                    return item.filled[i] === context!.client!._id!
                 }
             })
         }
@@ -60,6 +62,28 @@ const Reservations = () => {
             <div>
                 <Row style={{ marginBottom: '.5rem' }}>
                     <Col span={4}>
+                        <Select placeholder="Search status..."
+                            style={{ width: '100%' }}
+                            value={statusParams ? statusParams : null}
+                            onChange={(value: string) => {
+                                setStatusParams(value)
+                            }}
+                            allowClear={true}
+                        >
+                            <Option value={"predstojeci"}>
+                                Upcoming
+                            </Option>
+                            <Option value={"otkazan"}>
+                                Cancelled
+                            </Option>
+                            <Option value={"obavljen"}>
+                                Done
+                            </Option>
+                        </Select>
+                    </Col>
+                </Row>
+                <Row style={{ marginBottom: '.5rem' }}>
+                    <Col span={4}>
                         <Select placeholder="Search parameter..."
                             style={{ width: '100%' }}
                             onChange={(value: string) => {
@@ -92,16 +116,24 @@ const Reservations = () => {
                     <Col>
                         <Button type="primary" onClick={() => {
                             setSearch({
-                                [searchParams]: searchParamValue
+                                [searchParams]: searchParamValue,
+                                status: statusParams
                             })
                             console.log(search)
                             client.invalidateQueries(['flights', search])
                         }}>SEARCH</Button>
                     </Col>
                 </Row>
+                <div className='flight-section-title'>
+                    <span>RESERVED FLIGHTS</span>
+                </div>
                 <Table
                     dataSource={reservedFlights()}
                     columns={columns}
+                    pagination={{
+                        position: ["bottomLeft"],
+                        pageSize: 5,
+                    }}
                 />
             </div>
         )}</>)

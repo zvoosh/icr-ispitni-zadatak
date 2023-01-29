@@ -1,6 +1,6 @@
 import { Button, Col, Form, InputNumber, Row } from "antd"
 
-const ReserveForm = ({ finishFn }: { finishFn: (values:any, id?: string) => void }) => {
+const ReserveForm = ({ finishFn }: { finishFn: (values: any, id?: string) => void }) => {
     const [reserveForm] = Form.useForm();
 
     const onFinish = (values: any) => {
@@ -14,7 +14,8 @@ const ReserveForm = ({ finishFn }: { finishFn: (values:any, id?: string) => void
                     <Form.Item
                         labelAlign="left"
                         label="Number of cards"
-                        name={'count'}>
+                        name={'count'}
+                        rules={[{ required: true, message:"Must not be empty" }]}>
                         <InputNumber placeholder="Number of seats/cards..." style={{ width: '100%' }} />
                     </Form.Item>
                 </Col>

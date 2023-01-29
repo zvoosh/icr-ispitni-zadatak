@@ -27,6 +27,7 @@ export enum TAG_COLORS {
     PASTEL_BLUE = '#5D9B9B',
     BROWN = 'brown',
     ROSE = 'rose',
+    NAVY = 'navy'
 }
 
 export const DATE_FORMAT = {

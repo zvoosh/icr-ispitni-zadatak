@@ -99,7 +99,7 @@ const Login = () => {
                 maskClosable={true}
                 size={'large'}
                 closeIcon={<CloseOutlined className="color-black" />}
-                title="Create account"
+                title="Register an account"
                 open={isModalVisible}
                 footer={null}
                 width={700}
