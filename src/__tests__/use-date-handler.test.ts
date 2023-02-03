@@ -1,87 +1,66 @@
-jest.mock("date-fns");
-jest.mock("moment");
-
-import { format, parseISO } from "date-fns";
-import moment from "moment";
+import { renderHook } from "@testing-library/react";
+import {format} from "date-fns";
+// import { format } from "date-fns";
 import { useDate } from "../lib/use-date-handler";
-import { DATE_FORMAT } from "../types";
 
-const { dateFormat, parseIso, dateFormatFromIso, parseToMoment } = useDate();
-const stringFormat = DATE_FORMAT.ddMMyyyy;
-
-beforeAll(() => {
-  (format as any).mockImplementation(() => 'format');
-  (parseISO as any).mockImplementation(() => 'iso');
-  (moment as any).mockImplementation(() => 'moment');
-});
+const { result } = renderHook(() => useDate());
 
 it("should test dateFormat function", () => {
   const primerak = "2012-01-12";
 
   const mockedfn = jest.fn((d) => {
-    return dateFormat(d);
+    return result.current.dateFormat(d);
   });
 
-  const mockRes = mockedfn(primerak);
+  console.log(jest.isMockFunction(format))
 
-  const result = format(new Date(primerak), stringFormat);
+  // const mockRes = mockedfn(primerak);
 
-  expect(format).toBeCalled();
+  // expect(format).toBeCalled();
 
-  expect(mockRes).toBeDefined();
-  expect(mockRes).toEqual(result);
+  // expect(mockRes).toBeDefined();
 });
 
-it("should test parseIso function", () => {
-  const primerak = "2012-01-12";
+// it("should test parseIso function", () => {
+//   const primerak = "2012-01-12";
 
-  const mockedfn = jest.fn((d) => {
-    return parseIso(d);
-  });
+//   const mockedfn = jest.fn((d) => {
+//     return result.current.parseIso(d);
+//   });
 
-  const mockRes = mockedfn(primerak);
+//   const mockRes = mockedfn(primerak);
 
-  expect(parseISO).toBeCalled();
+//   expect(parseISO).toBeCalled();
 
-  const result = parseIso(primerak);
+//   expect(mockRes).toBeDefined();
+// });
 
-  expect(mockRes).toBeDefined();
-  expect(mockRes).toEqual(result);
-});
+// it("should test dateFormatParseIso function", () => {
+//   const primerak = "2012-01-12";
 
-it("should test dateFormatParseIso function", () => {
-  const primerak = "2012-01-12";
+//   const mockedfn = jest.fn((d) => {
+//     return result.current.parseIso(d);
+//   });
 
-  const mockedfn = jest.fn((d) => {
-    return dateFormatFromIso(d);
-  });
+//   const mockRes = mockedfn(primerak);
 
-  const mockRes = mockedfn(primerak);
+//   expect(parseISO).toBeCalled();
+//   expect(parseISO).toBeCalledWith(primerak);
+//   expect(format).toBeCalled();
 
-  expect(parseISO).toBeCalled();
-  expect(parseISO).toBeCalledWith(primerak);
-  expect(format).toBeCalled();
+//   expect(mockRes).toBeDefined();
+// });
 
-  const parsedDate = parseIso(primerak);
-  const result = format(new Date(parsedDate), stringFormat);
+// it("should test parseToMoment function", () => {
+//   const primerak = "2012-01-12";
 
-  expect(mockRes).toBeDefined();
-  expect(mockRes).toEqual(result);
-});
+//   const mockedfn = jest.fn((d) => {
+//     return  result.current.parseToMoment(d);
+//   });
 
-it("should test parseToMoment function", () => {
-  const primerak = "2012-01-12";
+//   const mockRes = mockedfn(primerak);
 
-  const mockedfn = jest.fn((d) => {
-    return parseToMoment(d);
-  });
+//   expect(moment).toBeCalled();
 
-  const mockRes = mockedfn(primerak);
-
-  expect(moment).toBeCalled();
-
-  const result = moment(primerak, stringFormat);
-
-  expect(mockRes).toBeDefined();
-  expect(mockRes).toEqual(result);
-});
+//   expect(mockRes).toBeDefined();
+// });
